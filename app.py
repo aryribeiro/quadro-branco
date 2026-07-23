@@ -203,6 +203,28 @@ HTML_XPI_EMULATOR = """
             cursor: pointer;
         }
 
+        /* Rodapé de Créditos */
+        .footer-credits {
+            text-align: center;
+            font-size: 11px;
+            font-style: italic;
+            color: #64748b;
+            padding-top: 6px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 2px;
+        }
+        .footer-credits a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+            font-style: italic;
+            transition: color 0.15s ease;
+        }
+        .footer-credits a:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
         #img-uploader {
             display: none;
         }
@@ -312,8 +334,14 @@ HTML_XPI_EMULATOR = """
             </button>
         </div>
 
+        <!-- Controle de Espessura do Traço -->
         <div class="slider-container">
             <input type="range" id="stroke-width" min="1" max="50" value="4" oninput="updateWidth(this.value)" title="Espessura do Traço">
+        </div>
+
+        <!-- Crédito do Autor -->
+        <div class="footer-credits">
+            por <a href="https://www.linkedin.com/in/aryribeiro" target="_blank" rel="noopener noreferrer">Ary Ribeiro</a>
         </div>
     </div>
 
@@ -416,7 +444,6 @@ HTML_XPI_EMULATOR = """
         }
 
         function setMode(mode) {
-            // Limpa estado de crop anterior se estivesse ativo
             if (currentMode === 'crop' && mode !== 'crop') {
                 cancelCrop();
             }
@@ -587,12 +614,10 @@ HTML_XPI_EMULATOR = """
             isStateLocked = false;
 
             if (targetCropImage) {
-                // Recorte direto da imagem
                 const img = targetCropImage;
                 const tempCanvas = document.createElement('canvas');
                 const ctx = tempCanvas.getContext('2d');
 
-                // Calcula escala real
                 const scaleX = img.scaleX || 1;
                 const scaleY = img.scaleY || 1;
 
@@ -627,7 +652,6 @@ HTML_XPI_EMULATOR = """
                     });
                 }
             } else {
-                // Recorte de área livre do Canvas
                 const dataURL = canvas.toDataURL({
                     left: bound.left,
                     top: bound.top,
