@@ -96,7 +96,7 @@ HTML_XPI_EMULATOR = """
             border-color: #cbd5e1;
         }
 
-        /* Painel Flutuante Vertical (Clone Fiel da Imagem XPI) */
+        /* Painel Flutuante Vertical */
         #toolbar {
             position: fixed;
             top: 62px;
@@ -106,7 +106,7 @@ HTML_XPI_EMULATOR = """
             border: 1px solid #e2e8f0;
             border-radius: 20px;
             padding: 10px;
-            display: none; /* Fechado por padrão */
+            display: none;
             flex-direction: column;
             gap: 8px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -146,7 +146,6 @@ HTML_XPI_EMULATOR = """
             border-color: #93c5fd;
         }
 
-        /* Input de Cor Customizado */
         .color-picker-wrapper {
             position: relative;
             width: 38px;
@@ -166,7 +165,6 @@ HTML_XPI_EMULATOR = """
             border: none;
         }
 
-        /* Slider de Espessura na parte inferior */
         .slider-container {
             padding: 4px 6px;
             display: flex;
@@ -181,7 +179,6 @@ HTML_XPI_EMULATOR = """
             cursor: pointer;
         }
 
-        /* Input de arquivo escondido para carregar imagem */
         #img-uploader {
             display: none;
         }
@@ -197,7 +194,7 @@ HTML_XPI_EMULATOR = """
     <!-- Barra de Ferramentas Flutuante -->
     <div id="toolbar">
         <div class="tool-grid">
-            <!-- Linha 1: Seletor de Cor | Desfazer | Refazer -->
+            <!-- Linha 1 -->
             <div class="color-picker-wrapper" title="Cor Principal">
                 <input type="color" id="color-picker" value="#f97316" onchange="updateColor(this.value)">
             </div>
@@ -208,7 +205,7 @@ HTML_XPI_EMULATOR = """
                 <i class="fa-solid fa-rotate-right"></i>
             </button>
 
-            <!-- Linha 2: Selecionar/Mover | Pincel | Marca-Texto -->
+            <!-- Linha 2 -->
             <button class="tool-btn active" id="btn-select" onclick="setMode('select')" title="Mover / Selecionar (V)">
                 <i class="fa-solid fa-arrows-up-down-left-right"></i>
             </button>
@@ -219,7 +216,7 @@ HTML_XPI_EMULATOR = """
                 <i class="fa-solid fa-highlighter"></i>
             </button>
 
-            <!-- Linha 3: Borracha | Texto | Retângulo Vazado -->
+            <!-- Linha 3 -->
             <button class="tool-btn" id="btn-eraser" onclick="setMode('eraser')" title="Borracha (E)">
                 <i class="fa-solid fa-eraser"></i>
             </button>
@@ -230,7 +227,7 @@ HTML_XPI_EMULATOR = """
                 <i class="fa-regular fa-square"></i>
             </button>
 
-            <!-- Linha 4: Círculo Vazado | Linha | Seta -->
+            <!-- Linha 4 -->
             <button class="tool-btn" id="btn-circle" onclick="addShape('circle-outline')" title="Círculo (C)">
                 <i class="fa-regular fa-circle"></i>
             </button>
@@ -241,7 +238,7 @@ HTML_XPI_EMULATOR = """
                 <i class="fa-solid fa-arrow-right"></i>
             </button>
 
-            <!-- Linha 5: Retângulo Cheio | Círculo Cheio | Importar Imagem -->
+            <!-- Linha 5 -->
             <button class="tool-btn" onclick="addShape('rect-filled')" title="Retângulo Preenchido">
                 <i class="fa-solid fa-square"></i>
             </button>
@@ -252,7 +249,7 @@ HTML_XPI_EMULATOR = """
                 <i class="fa-solid fa-image"></i>
             </button>
 
-            <!-- Linha 6: Duplicar Objeto | Trazer para Frente | Deletar Selecionado -->
+            <!-- Linha 6 -->
             <button class="tool-btn" onclick="duplicateSelected()" title="Duplicar Objeto">
                 <i class="fa-solid fa-copy"></i>
             </button>
@@ -263,18 +260,18 @@ HTML_XPI_EMULATOR = """
                 <i class="fa-solid fa-trash-can"></i>
             </button>
 
-            <!-- Linha 7: Seleção de Área | Cursor Laser | Salvar PNG -->
+            <!-- Linha 7 -->
             <button class="tool-btn" onclick="setMode('select')" title="Seleção">
                 <i class="fa-solid fa-crop-simple"></i>
             </button>
-            <button class="tool-btn" id="btn-pointer" onclick="setMode('pointer')" title="Ponteiro / Laser">
+            <button class="tool-btn" id="btn-pointer" onclick="setMode('pointer')" title="Ponteiro Laser">
                 <i class="fa-solid fa-arrow-pointer"></i>
             </button>
             <button class="tool-btn" onclick="exportPNG()" title="Baixar Imagem PNG">
                 <i class="fa-solid fa-download" style="color: #ef4444;"></i>
             </button>
 
-            <!-- Linha 8: Zoom In | Zoom Out | Limpar Tudo -->
+            <!-- Linha 8 -->
             <button class="tool-btn" onclick="zoomIn()" title="Aumentar Zoom (+)">
                 <i class="fa-solid fa-magnifying-glass-plus"></i>
             </button>
@@ -286,7 +283,6 @@ HTML_XPI_EMULATOR = """
             </button>
         </div>
 
-        <!-- Controle de Espessura do Traço -->
         <div class="slider-container">
             <input type="range" id="stroke-width" min="1" max="50" value="4" oninput="updateWidth(this.value)" title="Espessura do Traço">
         </div>
@@ -325,9 +321,19 @@ HTML_XPI_EMULATOR = """
             redoStack = [];
         }
 
-        canvas.on('object:added', saveState);
-        canvas.on('object:modified', saveState);
-        canvas.on('object:removed', saveState);
+        // Filtra objetos do laser para não poluir o histórico
+        canvas.on('object:added', (e) => {
+            if (e.target && e.target.isLaser) return;
+            saveState();
+        });
+        canvas.on('object:modified', (e) => {
+            if (e.target && e.target.isLaser) return;
+            saveState();
+        });
+        canvas.on('object:removed', (e) => {
+            if (e.target && e.target.isLaser) return;
+            saveState();
+        });
 
         function undo() {
             if (undoStack.length <= 1) return;
@@ -351,7 +357,6 @@ HTML_XPI_EMULATOR = """
             });
         }
 
-        // Estado do Menu
         function toggleMenu() {
             document.getElementById('toolbar').classList.toggle('active');
         }
@@ -387,26 +392,33 @@ HTML_XPI_EMULATOR = """
             document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
 
             canvas.isDrawingMode = (mode === 'draw' || mode === 'highlighter' || mode === 'eraser');
+            canvas.selection = (mode === 'select');
 
             if (mode === 'draw') {
                 document.getElementById('btn-draw').classList.add('active');
+                canvas.defaultCursor = 'default';
                 canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
                 canvas.freeDrawingBrush.color = currentColor;
                 canvas.freeDrawingBrush.width = parseInt(currentWidth, 10);
             } else if (mode === 'highlighter') {
                 document.getElementById('btn-highlighter').classList.add('active');
+                canvas.defaultCursor = 'default';
                 canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
                 canvas.freeDrawingBrush.color = hexToRgba(currentColor, 0.35);
                 canvas.freeDrawingBrush.width = parseInt(currentWidth, 10) * 4;
             } else if (mode === 'eraser') {
                 document.getElementById('btn-eraser').classList.add('active');
+                canvas.defaultCursor = 'default';
                 canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
                 canvas.freeDrawingBrush.color = '#ffffff';
                 canvas.freeDrawingBrush.width = parseInt(currentWidth, 10) * 4;
             } else if (mode === 'select') {
                 document.getElementById('btn-select').classList.add('active');
+                canvas.defaultCursor = 'default';
             } else if (mode === 'pointer') {
                 document.getElementById('btn-pointer').classList.add('active');
+                canvas.defaultCursor = 'crosshair';
+                canvas.hoverCursor = 'crosshair';
             }
         }
 
@@ -415,6 +427,115 @@ HTML_XPI_EMULATOR = """
             let g = parseInt(hex.slice(3, 5), 16);
             let b = parseInt(hex.slice(5, 7), 16);
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        // ==========================================
+        // IMPLEMENTAÇÃO DO PONTEIRO LASER (NEON TRAIL)
+        // ==========================================
+        let isLaserMouseDown = false;
+        let lastLaserPoint = null;
+
+        canvas.on('mouse:down', function(opt) {
+            if (currentMode === 'pointer') {
+                isLaserMouseDown = true;
+                drawLaserPoint(opt.e);
+            }
+        });
+
+        canvas.on('mouse:move', function(opt) {
+            if (currentMode === 'pointer' && isLaserMouseDown) {
+                drawLaserPoint(opt.e);
+            }
+        });
+
+        canvas.on('mouse:up', function() {
+            if (currentMode === 'pointer') {
+                isLaserMouseDown = false;
+                lastLaserPoint = null;
+            }
+        });
+
+        function drawLaserPoint(e) {
+            const pointer = canvas.getPointer(e);
+
+            // Conecta os pontos com uma linha brilhante se houver ponto anterior
+            if (lastLaserPoint) {
+                const laserLine = new fabric.Line(
+                    [lastLaserPoint.x, lastLaserPoint.y, pointer.x, pointer.y], 
+                    {
+                        stroke: '#ff0033',
+                        strokeWidth: 6,
+                        strokeLineCap: 'round',
+                        shadow: new fabric.Shadow({
+                            color: 'rgba(255, 0, 51, 1)',
+                            blur: 15
+                        }),
+                        selectable: false,
+                        evented: false,
+                        isLaser: true
+                    }
+                );
+
+                isStateLocked = true;
+                canvas.add(laserLine);
+                isStateLocked = false;
+
+                // Animação de dissolução do rastro
+                let op = 1;
+                const fadeLine = setInterval(() => {
+                    op -= 0.08;
+                    if (op <= 0) {
+                        clearInterval(fadeLine);
+                        isStateLocked = true;
+                        canvas.remove(laserLine);
+                        isStateLocked = false;
+                        canvas.requestRenderAll();
+                    } else {
+                        laserLine.set('opacity', op);
+                        canvas.requestRenderAll();
+                    }
+                }, 20);
+            }
+
+            // Desenha ponto central com brilho intenso
+            const laserDot = new fabric.Circle({
+                left: pointer.x,
+                top: pointer.y,
+                radius: 5,
+                fill: '#ffffff',
+                stroke: '#ff0033',
+                strokeWidth: 2,
+                shadow: new fabric.Shadow({
+                    color: 'rgba(255, 0, 51, 1)',
+                    blur: 16
+                }),
+                originX: 'center',
+                originY: 'center',
+                selectable: false,
+                evented: false,
+                isLaser: true
+            });
+
+            isStateLocked = true;
+            canvas.add(laserDot);
+            isStateLocked = false;
+
+            let dotOp = 1;
+            const fadeDot = setInterval(() => {
+                dotOp -= 0.08;
+                if (dotOp <= 0) {
+                    clearInterval(fadeDot);
+                    isStateLocked = true;
+                    canvas.remove(laserDot);
+                    isStateLocked = false;
+                    canvas.requestRenderAll();
+                } else {
+                    laserDot.set('opacity', dotOp);
+                    canvas.requestRenderAll();
+                }
+            }, 20);
+
+            lastLaserPoint = pointer;
         }
 
         // Formas Vetoriais
@@ -518,9 +639,7 @@ HTML_XPI_EMULATOR = """
             canvas.setZoom(canvas.getZoom() / 1.15);
         }
 
-        // ==========================================
-        // IMPORTAÇÃO DE IMAGEM CORRIGIDA & ROBUSTA
-        // ==========================================
+        // Importação de Imagens
         function triggerImgUpload() {
             document.getElementById('img-uploader').click();
         }
@@ -536,7 +655,6 @@ HTML_XPI_EMULATOR = """
                     originY: 'center'
                 });
 
-                // Escala inteligente para não estourar a tela nem ficar minúscula
                 const maxWidth = canvas.width * 0.75;
                 const maxHeight = canvas.height * 0.75;
 
@@ -549,7 +667,7 @@ HTML_XPI_EMULATOR = """
                 canvas.setActiveObject(imgInstance);
                 canvas.bringToFront(imgInstance);
                 imgInstance.setCoords();
-                canvas.requestRenderAll(); // Força renderização imediata sem bugs
+                canvas.requestRenderAll();
                 setMode('select');
             };
         }
@@ -561,12 +679,11 @@ HTML_XPI_EMULATOR = """
             const reader = new FileReader();
             reader.onload = function(f) {
                 processAndAddImage(f.target.result);
-                e.target.value = ''; // Libera o input para recarregar a mesma imagem se quiser
+                e.target.value = '';
             };
             reader.readAsDataURL(file);
         }
 
-        // Suporte extra: Colar Imagem/Screenshot da Área de Transferência (Ctrl+V)
         window.addEventListener('paste', (e) => {
             const items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let item of items) {
@@ -581,7 +698,6 @@ HTML_XPI_EMULATOR = """
             }
         });
 
-        // Efeito Sonoro e Exportação
         function playShutterSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -639,12 +755,10 @@ HTML_XPI_EMULATOR = """
             }
         });
 
-        // Estado inicial
         saveState();
     </script>
 </body>
 </html>
 """
 
-# Renderização sem bordas nem rolagem
 components.html(HTML_XPI_EMULATOR, height=1000, scrolling=False)
