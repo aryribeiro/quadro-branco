@@ -14,14 +14,25 @@ st.set_page_config(
 # Meta tag direta no contexto do Streamlit (fallback)
 st.markdown('<meta name="theme-color" content="#f97316">', unsafe_allow_html=True)
 
-# Oculta completamente cabeçalhos, rodapés e margens do Streamlit
+# Remoção estrita e completa de todo o cabeçalho e margens do Streamlit
 st.markdown("""
     <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
-        [data-testid="stSidebar"] {display: none;}
-        .block-container {
+        #MainMenu { display: none !important; }
+        footer { display: none !important; }
+        header { display: none !important; }
+        [data-testid="stHeader"] {
+            display: none !important;
+            height: 0 !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        [data-testid="stSidebar"] { display: none !important; }
+        .stApp {
+            padding-top: 0rem !important;
+            margin-top: 0rem !important;
+        }
+        .block-container, [data-testid="stAppViewBlockContainer"] {
             padding: 0rem !important;
             margin: 0rem !important;
             max-width: 100% !important;
@@ -76,11 +87,11 @@ HTML_XPI_EMULATOR = """
             background: #ffffff;
         }
 
-        /* Botão Hambúrguer Topo Esquerdo */
+        /* Botão Hambúrguer Topo Esquerdo (Ajustado para o topo) */
         #hamburger-btn {
             position: fixed;
-            top: 12px;
-            left: 12px;
+            top: 8px;
+            left: 8px;
             z-index: 9999;
             width: 42px;
             height: 42px;
@@ -105,8 +116,8 @@ HTML_XPI_EMULATOR = """
         /* Painel Flutuante Vertical */
         #toolbar {
             position: fixed;
-            top: 62px;
-            left: 12px;
+            top: 54px;
+            left: 8px;
             z-index: 9998;
             background: #ffffff;
             border: 1px solid #e2e8f0;
@@ -358,16 +369,13 @@ HTML_XPI_EMULATOR = """
     </div>
 
     <script>
-        // ==========================================
-        // INJEÇÃO DOM PAIR/TOP - TÉCNICA DO CASE DE SUCESSO
-        // ==========================================
+        // Injeção DOM Pai/Top para Barra de Status Mobile e Scrollbar
         (function() {
             const docsToTarget = [document];
             try { if (window.parent && window.parent.document) docsToTarget.push(window.parent.document); } catch(e) {}
             try { if (window.top && window.top.document) docsToTarget.push(window.top.document); } catch(e) {}
 
             docsToTarget.forEach(function(d) {
-                // Injeta Meta Theme Color Laranja (#f97316) para Barra de Status Mobile
                 var existingMetas = d.querySelectorAll('meta[name="theme-color"]');
                 existingMetas.forEach(function(el) { el.remove(); });
                 var meta = d.createElement('meta');
@@ -382,7 +390,6 @@ HTML_XPI_EMULATOR = """
                 appleMeta.content = '#f97316';
                 d.head.insertBefore(appleMeta, d.head.firstChild);
 
-                // Injeta Scrollbar Laranja Global no Documento Pai
                 if (!d.getElementById('quadro-global-scrollbar-css')) {
                     const style = d.createElement('style');
                     style.id = 'quadro-global-scrollbar-css';
