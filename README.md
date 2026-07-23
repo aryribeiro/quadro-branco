@@ -5,44 +5,48 @@
 ![Fabric.js](https://img.shields.io/badge/Fabric.js-5.3.1-blue?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-O **Quadro Branco** é um Web Application de alta fidelidade desenvolvido em **Streamlit** com injeção **Fullstack (HTML5 / Fabric.js / CSS3 / JavaScript)**. 
+O **Quadro Branco** é uma aplicação Web de alta fidelidade desenvolvida em **Streamlit** com arquitetura **Fullstack (HTML5 / Fabric.js / CSS3 / JavaScript)**.
 
-O projeto é resultado da **engenharia reversa e refatoração** de uma extensão WebExtension para navegadores, transformando-a em uma aplicação standalone de tela cheia, sem distrações e pronta para rodar em qualquer dispositivo ou navegador.
-
----
-
-## 🌟 Destaques & Diferenciais
-
-* 🤍 **Interface "Tela Branca" Minimalista:** Zero distrações, sem cabeçalhos, rodapés ou menus nativos poluindo a viewport.
-* 🍔 **Menu Hambúrguer Flutuante:** Posicionado no canto superior esquerdo e recolhido por padrão. Ao clicar, abre a paleta completa de ferramentas.
-* 🚀 **Renderização de Alta Performance:** Canvas vetorial rodando a 60 FPS via **Fabric.js** diretamente no navegador do cliente.
-* 📋 **Suporte a Colar da Área de Transferência (`Ctrl + V`):** Cole screenshots e imagens copiadas diretamente no quadro sem precisar fazer upload manual.
-* 🖼️ **Upload Inteligente de Imagens:** Redimensionamento e centralização automática de imagens sem ocultação ou bugs de renderização.
-* 🔊 **Feedback Sonoro:** Efeito sonoro de obturador de câmera sintetizado via **Web Audio API** ao exportar a imagem.
+O projeto é resultado da **engenharia reversa e refatoração completa** de uma extensão WebExtension para navegadores, convertida em uma ferramenta standalone de tela cheia, fluida e totalmente responsiva.
 
 ---
 
-## 🛠️ Ferramentas Disponíveis
+## 🌟 Destaques & Recursos Avançados
+
+* 🤍 **Interface "Tela Branca" Minimalista:** Zera e oculta cabeçalhos, rodapés e margens nativas do Streamlit sem deixar espaço em branco no topo.
+* 🍔 **Menu Hambúrguer Flutuante:** Posicionado de forma justa no canto superior esquerdo, recolhido por padrão.
+* ⚡ **Performance de 60 FPS:** Motor gráfico **Fabric.js** executado diretamente no navegador do cliente sem gargalos de *rerun* no servidor.
+* 🎯 **Ponteiro Laser Neon (Com Fade-out):** Desenhe um rastro incandescente que se dissipa suavemente em frações de segundo. Isolado do histórico (`undo/redo`) e sem arrastar objetos ou imagens do quadro.
+* ✂️ **Ferramenta de Recorte Interativa (Crop):** Selecione uma imagem existente ou desenhe uma caixa pontilhada em qualquer área livre da tela para realizar o corte instantâneo.
+* 📋 **Suporte a Colar da Área de Transferência (`Ctrl + V`):** Cole screenshots e imagens diretamente no quadro sem necessidade de upload manual.
+* 📱 **Barra de Status Mobile & Scrollbar Laranja Customizada:** Injeção DOM de metatags (`theme-color: #f97316`) e CSS global no documento pai (`window.parent.document`) para estilizar a barra de status dos celulares e a barra de rolagem dos navegadores no tom laranja padrão do aplicativo.
+* 🔊 **Feedback Sonoro:** Som de obturador sintetizado via **Web Audio API** ao exportar o quadro.
+
+---
+
+## 🛠️ Tabela Completa de Ferramentas
 
 | Ícone | Ferramenta | Descrição |
 | :---: | :--- | :--- |
-| 🎨 | **Seletor de Cores** | Cor customizada para traços, formas e textos. |
-| ↩️ / ↪️ | **Undo / Redo** | Histórico completo de ações (Desfazer e Refazer). |
-| 🖐️ | **Selecionar / Mover** | Manipule, redimensione e rotacione elementos na tela. |
-| ✏️ | **Pincel** | Desenho livre ajustável. |
-| 🖍️ | **Marca-Texto** | Traço translúcido para destacar textos e áreas. |
-| 🧽 | **Borracha** | Apaga traços diretamente no plano de fundo. |
-| 🔤 | **Texto** | Inserção de caixa de texto editável. |
-| 🔲 / ⭕ | **Formas Vazadas** | Retângulos e Círculos com contorno. |
-| ⬛ / 🔴 | **Formas Preenchidas** | Retângulos e Círculos com preenchimento sólido. |
-| ➖ / ➡️ | **Linhas e Setas** | Desenho de linhas retas e setas direcionais. |
-| 🖼️ | **Carregar Imagem** | Upload de imagens locais/screenshots. |
-| 📋 | **Duplicar Objeto** | Clona o elemento selecionado no canvas. |
-| 🔝 | **Trazer para Frente** | Ajusta a ordem de camadas (Z-Index). |
-| 🗑️ | **Excluir Selecionado** | Remove o objeto ativo no momento. |
-| 🔍 | **Zoom In / Out** | Controle de zoom para navegação no quadro. |
-| 🧹 | **Limpar Tela** | Reseta todo o canvas para branco. |
-| 💾 | **Salvar PNG** | Exporta o quadro atual em alta resolução. |
+| 🎨 | **Seletor de Cores** | Ajusta a cor de traços, preenchimentos, formas e textos. |
+| ↩️ / ↪️ | **Desfazer / Refazer** | Controle total de histórico da área de trabalho. |
+| 🖐️ | **Selecionar / Mover** | Selecione, dimensione, rotacione e reposicione elementos. |
+| ✏️ | **Pincel / Caneta** | Desenho livre ajustável. |
+| 🖍️ | **Marca-Texto** | Traço translúcido para destacar informações. |
+| 🧽 | **Borracha** | Apaga traços diretamente sobre o plano de fundo. |
+| 🔤 | **Texto** | Inserção de caixa de texto editável (`IText`). |
+| 🔲 / ⭕ | **Formas Vazadas** | Retângulos e Círculos com contorno customizado. |
+| ⬛ / 🔴 | **Formas Preenchidas** | Retângulos e Círculos sólidos. |
+| ➖ / ➡️ | **Linhas e Setas** | Criação de linhas retas e setas direcionais. |
+| 🖼️ | **Carregar Imagem** | Upload local com escala e centralização inteligente. |
+| 📋 | **Duplicar Objeto** | Clona elementos ativos na área de trabalho. |
+| 🔝 | **Trazer para Frente** | Ajusta a ordem das camadas do canvas (Z-Index). |
+| 🗑️ | **Excluir Selecionado** | Remove o objeto ou conjunto de objetos ativos. |
+| ✂️ | **Ferramenta de Corte (Crop)** | Recorta imagens ativas ou regiões do quadro. |
+| 🎯 | **Ponteiro Laser** | Rastro vermelho incandescente temporário para apresentações. |
+| 🔍 | **Zoom In / Out** | Controle de ampliação e navegação. |
+| 🧹 | **Limpar Tela** | Reseta todo o quadro para branco. |
+| 💾 | **Exportar PNG** | Baixa a imagem final em alta resolução com efeito sonoro. |
 
 ---
 
@@ -53,14 +57,15 @@ O projeto é resultado da **engenharia reversa e refatoração** de uma extensã
 | `Ctrl + Z` / `Cmd + Z` | Desfazer (*Undo*) |
 | `Ctrl + Y` / `Cmd + Y` | Refazer (*Redo*) |
 | `Ctrl + V` / `Cmd + V` | Colar Imagem da Área de Transferência |
+| `Enter` | Confirmar Recorte no Modo Crop |
 | `Delete` / `Backspace` | Excluir elemento selecionado |
 | `P` | Ativar Pincel |
 | `E` | Ativar Borracha |
 | `T` | Inserir Texto |
-| `R` | Criar Retângulo |
-| `C` | Criar Círculo |
-| `L` | Criar Linha |
-| `A` | Criar Seta |
+| `R` | Desenhar Retângulo |
+| `C` | Desenhar Círculo |
+| `L` | Desenhar Linha Reta |
+| `A` | Inserir Seta |
 | `V` ou `M` | Modo Selecionar / Mover |
 
 ---
@@ -68,11 +73,11 @@ O projeto é resultado da **engenharia reversa e refatoração** de uma extensã
 ## 🚀 Como Executar Localmente
 
 ### Pré-requisitos
-* **Python 3.9+** instalado na máquina.
+* **Python 3.9 ou superior** instalado.
 
 ### Passo a Passo
 
-1. **Clone o repositório:**
+1. **Clone este repositório:**
    ```bash
    git clone [https://github.com/aryribeiro/quadro-branco.git](https://github.com/aryribeiro/quadro-branco.git)
    cd quadro-branco
