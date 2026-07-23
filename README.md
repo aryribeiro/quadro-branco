@@ -13,6 +13,7 @@ O 🎨 **Quadro Branco** (Web App & Canvas Editor) é uma aplicação de alta fi
 O projeto é resultado da **engenharia reversa e refatoração completa** de uma extensão WebExtension para navegadores, convertida em uma ferramenta standalone de tela cheia, fluida e totalmente responsiva.
 
 Por **Ary Ribeiro**: https://www.linkedin.com/in/aryribeiro
+
 ---
 
 ## 🌟 Destaques & Recursos Avançados
