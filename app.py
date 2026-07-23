@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # ==========================================
-# 1. CONFIGURAÇÃO DE PÁGINA (PAGINA LIMPA)
+# 1. CONFIGURAÇÃO DE PÁGINA (PÁGINA LIMPA)
 # ==========================================
 st.set_page_config(
     page_title="Quadro Branco",
@@ -518,26 +518,68 @@ HTML_XPI_EMULATOR = """
             canvas.setZoom(canvas.getZoom() / 1.15);
         }
 
-        // Imagem / Screenshot
+        // ==========================================
+        // IMPORTAÇÃO DE IMAGEM CORRIGIDA & ROBUSTA
+        // ==========================================
         function triggerImgUpload() {
             document.getElementById('img-uploader').click();
+        }
+
+        function processAndAddImage(src) {
+            const imgElement = new Image();
+            imgElement.src = src;
+            imgElement.onload = function() {
+                const imgInstance = new fabric.Image(imgElement, {
+                    left: canvas.width / 2,
+                    top: canvas.height / 2,
+                    originX: 'center',
+                    originY: 'center'
+                });
+
+                // Escala inteligente para não estourar a tela nem ficar minúscula
+                const maxWidth = canvas.width * 0.75;
+                const maxHeight = canvas.height * 0.75;
+
+                if (imgInstance.width > maxWidth || imgInstance.height > maxHeight) {
+                    const scale = Math.min(maxWidth / imgInstance.width, maxHeight / imgInstance.height);
+                    imgInstance.scale(scale);
+                }
+
+                canvas.add(imgInstance);
+                canvas.setActiveObject(imgInstance);
+                canvas.bringToFront(imgInstance);
+                imgInstance.setCoords();
+                canvas.requestRenderAll(); // Força renderização imediata sem bugs
+                setMode('select');
+            };
         }
 
         function handleImageUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(f) {
-                fabric.Image.fromURL(f.target.result, function(img) {
-                    img.scaleToWidth(window.innerWidth * 0.6);
-                    img.set({ left: window.innerWidth / 2 - (img.scaledWidth / 2), top: window.innerHeight / 2 - (img.scaledHeight / 2) });
-                    canvas.add(img);
-                    canvas.setActiveObject(img);
-                    setMode('select');
-                });
+                processAndAddImage(f.target.result);
+                e.target.value = ''; // Libera o input para recarregar a mesma imagem se quiser
             };
             reader.readAsDataURL(file);
         }
+
+        // Suporte extra: Colar Imagem/Screenshot da Área de Transferência (Ctrl+V)
+        window.addEventListener('paste', (e) => {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        processAndAddImage(event.target.result);
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }
+        });
 
         // Efeito Sonoro e Exportação
         function playShutterSound() {
