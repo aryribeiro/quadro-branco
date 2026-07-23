@@ -8,23 +8,21 @@ Obs.: caso o app esteja no modo "sleeping" (dormindo) ao entrar, basta clicar no
 ![Fabric.js](https://img.shields.io/badge/Fabric.js-5.3.1-blue?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Por **Ary Ribeiro**: https://www.linkedin.com/in/aryribeiro
-
 O 🎨 **Quadro Branco** (Web App & Canvas Editor) é uma aplicação de alta fidelidade, desenvolvida em **Streamlit** com arquitetura **Fullstack (HTML5 / Fabric.js / CSS3 / JavaScript)**.
 
 O projeto é resultado da **engenharia reversa e refatoração completa** de uma extensão WebExtension para navegadores, convertida em uma ferramenta standalone de tela cheia, fluida e totalmente responsiva.
 
+Por **Ary Ribeiro**: https://www.linkedin.com/in/aryribeiro
 ---
 
 ## 🌟 Destaques & Recursos Avançados
 
-* 🤍 **Interface "Tela Branca" Minimalista:** Zera e oculta cabeçalhos, rodapés e margens nativas do Streamlit sem deixar espaço em branco no topo.
-* 🍔 **Menu Hambúrguer Flutuante:** Posicionado de forma justa no canto superior esquerdo, recolhido por padrão.
+* 🤍 **Interface "Tela Branca" Minimalista:** Zera e oculta cabeçalhos, rodapés e margens nativas do Streamlit.
+* 🍔 **Menu Hambúrguer Flutuante:** Posicionado no canto superior esquerdo, recolhido por padrão.
 * ⚡ **Performance de 60 FPS:** Motor gráfico **Fabric.js** executado diretamente no navegador do cliente sem gargalos de *rerun* no servidor.
 * 🎯 **Ponteiro Laser Neon (Com Fade-out):** Desenhe um rastro incandescente que se dissipa suavemente em frações de segundo. Isolado do histórico (`undo/redo`) e sem arrastar objetos ou imagens do quadro.
 * ✂️ **Ferramenta de Recorte Interativa (Crop):** Selecione uma imagem existente ou desenhe uma caixa pontilhada em qualquer área livre da tela para realizar o corte instantâneo.
 * 📋 **Suporte a Colar da Área de Transferência (`Ctrl + V`):** Cole screenshots e imagens diretamente no quadro sem necessidade de upload manual.
-* 📱 **Barra de Status Mobile & Scrollbar Laranja Customizada:** Injeção DOM de metatags (`theme-color: #f97316`) e CSS global no documento pai (`window.parent.document`) para estilizar a barra de status dos celulares e a barra de rolagem dos navegadores no tom laranja padrão do aplicativo.
 * 🔊 **Feedback Sonoro:** Som de obturador sintetizado via **Web Audio API** ao exportar o quadro.
 
 ---
@@ -84,4 +82,3 @@ O projeto é resultado da **engenharia reversa e refatoração completa** de uma
    ```bash
    git clone https://github.com/aryribeiro/quadro-branco.git
    cd quadro-branco
-
