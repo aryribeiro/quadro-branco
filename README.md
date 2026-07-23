@@ -1,4 +1,5 @@
-Obs.: caso o app esteja no modo "sleeping" (dormindo) ao entrar, basta clicar no botão que estará disponível e aguardar, para ativar o mesmo. 
+Obs.: caso o app esteja no modo "sleeping" (dormindo) ao entrar, basta clicar no botão que estará disponível e aguardar, para ativar o mesmo.
+
 <img width="537" height="604" alt="print" src="https://github.com/user-attachments/assets/ef2f9296-9774-486b-8735-7fcbb8f68b99" />
 
 
