@@ -11,6 +11,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Meta tag direta no contexto do Streamlit (fallback)
+st.markdown('<meta name="theme-color" content="#f97316">', unsafe_allow_html=True)
+
 # Oculta completamente cabeçalhos, rodapés e margens do Streamlit
 st.markdown("""
     <style>
@@ -45,10 +48,6 @@ HTML_XPI_EMULATOR = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Cor da Barra de Status nos Dispositivos Móveis (Android/Safari) -->
-    <meta name="theme-color" content="#f97316">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#f97316">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -58,25 +57,6 @@ HTML_XPI_EMULATOR = """
             margin: 0;
             padding: 0;
             user-select: none;
-            /* Scrollbar para Firefox */
-            scrollbar-width: thin;
-            scrollbar-color: #f97316 #ffffff;
-        }
-
-        /* Estilização da Barra de Rolagem (Chrome, Safari, Edge, Opera) */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #ffffff;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #f97316;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ea580c;
         }
 
         html, body {
@@ -96,7 +76,7 @@ HTML_XPI_EMULATOR = """
             background: #ffffff;
         }
 
-        /* Botão Hambúrguer Topo Esquerdo (Clone XPI) */
+        /* Botão Hambúrguer Topo Esquerdo */
         #hamburger-btn {
             position: fixed;
             top: 12px;
@@ -378,6 +358,46 @@ HTML_XPI_EMULATOR = """
     </div>
 
     <script>
+        // ==========================================
+        // INJEÇÃO DOM PAIR/TOP - TÉCNICA DO CASE DE SUCESSO
+        // ==========================================
+        (function() {
+            const docsToTarget = [document];
+            try { if (window.parent && window.parent.document) docsToTarget.push(window.parent.document); } catch(e) {}
+            try { if (window.top && window.top.document) docsToTarget.push(window.top.document); } catch(e) {}
+
+            docsToTarget.forEach(function(d) {
+                // Injeta Meta Theme Color Laranja (#f97316) para Barra de Status Mobile
+                var existingMetas = d.querySelectorAll('meta[name="theme-color"]');
+                existingMetas.forEach(function(el) { el.remove(); });
+                var meta = d.createElement('meta');
+                meta.name = 'theme-color';
+                meta.content = '#f97316';
+                d.head.insertBefore(meta, d.head.firstChild);
+
+                var existingApple = d.querySelectorAll('meta[name="apple-mobile-web-app-status-bar-style"]');
+                existingApple.forEach(function(el) { el.remove(); });
+                var appleMeta = d.createElement('meta');
+                appleMeta.name = 'apple-mobile-web-app-status-bar-style';
+                appleMeta.content = '#f97316';
+                d.head.insertBefore(appleMeta, d.head.firstChild);
+
+                // Injeta Scrollbar Laranja Global no Documento Pai
+                if (!d.getElementById('quadro-global-scrollbar-css')) {
+                    const style = d.createElement('style');
+                    style.id = 'quadro-global-scrollbar-css';
+                    style.textContent = `
+                        * { scrollbar-color: #f97316 #ffffff !important; scrollbar-width: thin !important; }
+                        *::-webkit-scrollbar { width: 8px !important; height: 8px !important; }
+                        *::-webkit-scrollbar-thumb { background-color: #f97316 !important; border-radius: 4px !important; }
+                        *::-webkit-scrollbar-thumb:hover { background-color: #ea580c !important; }
+                        *::-webkit-scrollbar-track { background: #ffffff !important; border-radius: 4px !important; }
+                    `;
+                    d.head.appendChild(style);
+                }
+            });
+        })();
+
         // Inicialização do Canvas
         const canvas = new fabric.Canvas('c', {
             isDrawingMode: false,
