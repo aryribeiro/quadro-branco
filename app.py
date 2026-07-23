@@ -146,6 +146,30 @@ HTML_XPI_EMULATOR = """
             border-color: #93c5fd;
         }
 
+        /* Botão Flutuante de Confirmação de Recorte */
+        #crop-confirm-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: none;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s ease;
+        }
+        #crop-confirm-btn:hover {
+            background-color: #059669;
+            transform: translateX(-50%) scale(1.05);
+        }
+
         .color-picker-wrapper {
             position: relative;
             width: 38px;
@@ -189,6 +213,11 @@ HTML_XPI_EMULATOR = """
     <!-- Botão Hambúrguer -->
     <button id="hamburger-btn" onclick="toggleMenu()" title="Ferramentas (Menu)">
         <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Botão Flutuante de Confirmar Recorte -->
+    <button id="crop-confirm-btn" onclick="applyCrop()">
+        <i class="fa-solid fa-check"></i> Confirmar Recorte
     </button>
 
     <!-- Barra de Ferramentas Flutuante -->
@@ -261,7 +290,7 @@ HTML_XPI_EMULATOR = """
             </button>
 
             <!-- Linha 7 -->
-            <button class="tool-btn" onclick="setMode('select')" title="Seleção">
+            <button class="tool-btn" id="btn-crop" onclick="setMode('crop')" title="Recortar Imagem / Área (Crop)">
                 <i class="fa-solid fa-crop-simple"></i>
             </button>
             <button class="tool-btn" id="btn-pointer" onclick="setMode('pointer')" title="Ponteiro Laser">
@@ -322,15 +351,15 @@ HTML_XPI_EMULATOR = """
         }
 
         canvas.on('object:added', (e) => {
-            if (e.target && e.target.isLaser) return;
+            if (e.target && (e.target.isLaser || e.target.isCropBox)) return;
             saveState();
         });
         canvas.on('object:modified', (e) => {
-            if (e.target && e.target.isLaser) return;
+            if (e.target && (e.target.isLaser || e.target.isCropBox)) return;
             saveState();
         });
         canvas.on('object:removed', (e) => {
-            if (e.target && e.target.isLaser) return;
+            if (e.target && (e.target.isLaser || e.target.isCropBox)) return;
             saveState();
         });
 
@@ -387,16 +416,16 @@ HTML_XPI_EMULATOR = """
         }
 
         function setMode(mode) {
+            // Limpa estado de crop anterior se estivesse ativo
+            if (currentMode === 'crop' && mode !== 'crop') {
+                cancelCrop();
+            }
+
             currentMode = mode;
             document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
 
-            // Desativa seleção ativa existente
-            canvas.discardActiveObject();
-
             canvas.isDrawingMode = (mode === 'draw' || mode === 'highlighter' || mode === 'eraser');
             canvas.selection = (mode === 'select');
-            
-            // FIX CRÍTICO: Bloqueia a detecção de objetos/imagens quando em modo laser
             canvas.skipTargetFind = (mode === 'pointer');
 
             if (mode === 'draw') {
@@ -424,6 +453,9 @@ HTML_XPI_EMULATOR = """
                 document.getElementById('btn-pointer').classList.add('active');
                 canvas.defaultCursor = 'crosshair';
                 canvas.hoverCursor = 'crosshair';
+            } else if (mode === 'crop') {
+                document.getElementById('btn-crop').classList.add('active');
+                initCropMode();
             }
 
             canvas.renderAll();
@@ -434,6 +466,194 @@ HTML_XPI_EMULATOR = """
             let g = parseInt(hex.slice(3, 5), 16);
             let b = parseInt(hex.slice(5, 7), 16);
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        // ==========================================
+        // FUNCIONALIDADE DE RECORTE (CROP) COMPLETA
+        // ==========================================
+        let cropBox = null;
+        let targetCropImage = null;
+        let isCropMouseDown = false;
+        let cropStartX = 0;
+        let cropStartY = 0;
+
+        function initCropMode() {
+            const activeObj = canvas.getActiveObject();
+
+            if (activeObj && activeObj.type === 'image') {
+                targetCropImage = activeObj;
+                const bound = activeObj.getBoundingRect();
+
+                cropBox = new fabric.Rect({
+                    left: bound.left,
+                    top: bound.top,
+                    width: bound.width,
+                    height: bound.height,
+                    fill: 'rgba(37, 99, 235, 0.15)',
+                    stroke: '#2563eb',
+                    strokeWidth: 2,
+                    strokeDashArray: [6, 6],
+                    cornerColor: '#2563eb',
+                    cornerSize: 10,
+                    transparentCorners: false,
+                    isCropBox: true
+                });
+
+                isStateLocked = true;
+                canvas.add(cropBox);
+                canvas.setActiveObject(cropBox);
+                isStateLocked = false;
+                showCropConfirmButton();
+            } else {
+                targetCropImage = null;
+                canvas.defaultCursor = 'crosshair';
+            }
+        }
+
+        canvas.on('mouse:down', function(opt) {
+            if (currentMode === 'crop' && !targetCropImage && !cropBox) {
+                isCropMouseDown = true;
+                const pointer = canvas.getPointer(opt.e);
+                cropStartX = pointer.x;
+                cropStartY = pointer.y;
+
+                cropBox = new fabric.Rect({
+                    left: cropStartX,
+                    top: cropStartY,
+                    width: 1,
+                    height: 1,
+                    fill: 'rgba(37, 99, 235, 0.15)',
+                    stroke: '#2563eb',
+                    strokeWidth: 2,
+                    strokeDashArray: [6, 6],
+                    cornerColor: '#2563eb',
+                    cornerSize: 10,
+                    transparentCorners: false,
+                    isCropBox: true
+                });
+
+                isStateLocked = true;
+                canvas.add(cropBox);
+                isStateLocked = false;
+            }
+        });
+
+        canvas.on('mouse:move', function(opt) {
+            if (currentMode === 'crop' && isCropMouseDown && cropBox) {
+                const pointer = canvas.getPointer(opt.e);
+                const w = Math.abs(pointer.x - cropStartX);
+                const h = Math.abs(pointer.y - cropStartY);
+
+                cropBox.set({
+                    left: Math.min(pointer.x, cropStartX),
+                    top: Math.min(pointer.y, cropStartY),
+                    width: w,
+                    height: h
+                });
+                canvas.requestRenderAll();
+            }
+        });
+
+        canvas.on('mouse:up', function() {
+            if (currentMode === 'crop' && isCropMouseDown && cropBox) {
+                isCropMouseDown = false;
+                canvas.setActiveObject(cropBox);
+                showCropConfirmButton();
+            }
+        });
+
+        function showCropConfirmButton() {
+            document.getElementById('crop-confirm-btn').style.display = 'block';
+        }
+
+        function cancelCrop() {
+            if (cropBox) {
+                isStateLocked = true;
+                canvas.remove(cropBox);
+                isStateLocked = false;
+                cropBox = null;
+            }
+            targetCropImage = null;
+            document.getElementById('crop-confirm-btn').style.display = 'none';
+        }
+
+        function applyCrop() {
+            if (!cropBox) return;
+
+            const bound = cropBox.getBoundingRect();
+            
+            isStateLocked = true;
+            canvas.remove(cropBox);
+            isStateLocked = false;
+
+            if (targetCropImage) {
+                // Recorte direto da imagem
+                const img = targetCropImage;
+                const tempCanvas = document.createElement('canvas');
+                const ctx = tempCanvas.getContext('2d');
+
+                // Calcula escala real
+                const scaleX = img.scaleX || 1;
+                const scaleY = img.scaleY || 1;
+
+                const imgBound = img.getBoundingRect();
+
+                const cropX = (bound.left - imgBound.left) / scaleX;
+                const cropY = (bound.top - imgBound.top) / scaleY;
+                const cropW = bound.width / scaleX;
+                const cropH = bound.height / scaleY;
+
+                if (cropW > 5 && cropH > 5) {
+                    tempCanvas.width = cropW;
+                    tempCanvas.height = cropH;
+
+                    ctx.drawImage(img._element, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+                    fabric.Image.fromURL(tempCanvas.toDataURL(), function(croppedImg) {
+                        croppedImg.set({
+                            left: bound.left + bound.width / 2,
+                            top: bound.top + bound.height / 2,
+                            originX: 'center',
+                            originY: 'center',
+                            scaleX: scaleX,
+                            scaleY: scaleY
+                        });
+
+                        canvas.remove(img);
+                        canvas.add(croppedImg);
+                        canvas.setActiveObject(croppedImg);
+                        canvas.renderAll();
+                        saveState();
+                    });
+                }
+            } else {
+                // Recorte de área livre do Canvas
+                const dataURL = canvas.toDataURL({
+                    left: bound.left,
+                    top: bound.top,
+                    width: bound.width,
+                    height: bound.height,
+                    format: 'png'
+                });
+
+                fabric.Image.fromURL(dataURL, function(croppedImg) {
+                    croppedImg.set({
+                        left: bound.left + bound.width / 2,
+                        top: bound.top + bound.height / 2,
+                        originX: 'center',
+                        originY: 'center'
+                    });
+                    canvas.add(croppedImg);
+                    canvas.setActiveObject(croppedImg);
+                    canvas.renderAll();
+                    saveState();
+                });
+            }
+
+            cropBox = null;
+            targetCropImage = null;
+            document.getElementById('crop-confirm-btn').style.display = 'none';
+            setMode('select');
         }
 
         // ==========================================
@@ -732,7 +952,9 @@ HTML_XPI_EMULATOR = """
         window.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+            if (e.key === 'Enter' && currentMode === 'crop') {
+                applyCrop();
+            } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                 e.preventDefault();
                 undo();
             } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
