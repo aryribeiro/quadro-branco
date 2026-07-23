@@ -80,5 +80,6 @@ O projeto é resultado da **engenharia reversa e refatoração completa** de uma
    git clone https://github.com/aryribeiro/quadro-branco.git
    cd quadro-branco
 
+---
 
-**Por Ary Ribeiro: https://www.linkedin.com/in/aryribeiro**
+![Por Ary Ribeiro:](https://www.linkedin.com/in/aryribeiro)
