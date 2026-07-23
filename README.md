@@ -1,11 +1,14 @@
-# 🎨 Quadro Branco — Web App & Canvas Editor
+Obs.: caso o app esteja no modo "sleeping" (dormindo) ao entrar, basta clicar no botão que estará disponível e aguardar, para ativar o mesmo. 
+<img width="537" height="604" alt="print" src="https://github.com/user-attachments/assets/ef2f9296-9774-486b-8735-7fcbb8f68b99" />
+
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://quadro.streamlit.app)
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)
 ![Fabric.js](https://img.shields.io/badge/Fabric.js-5.3.1-blue?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Por Ary Ribeiro:](https://www.linkedin.com/in/aryribeiro)
 
-O **Quadro Branco** é uma aplicação Web de alta fidelidade desenvolvida em **Streamlit** com arquitetura **Fullstack (HTML5 / Fabric.js / CSS3 / JavaScript)**.
+O 🎨 **Quadro Branco** (Web App & Canvas Editor) é uma aplicação de alta fidelidade, desenvolvida em **Streamlit** com arquitetura **Fullstack (HTML5 / Fabric.js / CSS3 / JavaScript)**.
 
 O projeto é resultado da **engenharia reversa e refatoração completa** de uma extensão WebExtension para navegadores, convertida em uma ferramenta standalone de tela cheia, fluida e totalmente responsiva.
 
@@ -80,6 +83,3 @@ O projeto é resultado da **engenharia reversa e refatoração completa** de uma
    git clone https://github.com/aryribeiro/quadro-branco.git
    cd quadro-branco
 
----
-
-![Por Ary Ribeiro:](https://www.linkedin.com/in/aryribeiro)
