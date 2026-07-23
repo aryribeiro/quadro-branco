@@ -8,7 +8,7 @@ Obs.: caso o app esteja no modo "sleeping" (dormindo) ao entrar, basta clicar no
 ![Fabric.js](https://img.shields.io/badge/Fabric.js-5.3.1-blue?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-![Por Ary Ribeiro](https://www.linkedin.com/in/aryribeiro)
+Por **Ary Ribeiro**: https://www.linkedin.com/in/aryribeiro
 
 O 🎨 **Quadro Branco** (Web App & Canvas Editor) é uma aplicação de alta fidelidade, desenvolvida em **Streamlit** com arquitetura **Fullstack (HTML5 / Fabric.js / CSS3 / JavaScript)**.
 
