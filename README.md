@@ -75,9 +75,10 @@ O projeto é resultado da **engenharia reversa e refatoração completa** de uma
 ### Pré-requisitos
 * **Python 3.9 ou superior** instalado.
 
-### Passo a Passo
-
-1. **Clone este repositório:**
+**Clone este repositório:**
    ```bash
-   git clone [https://github.com/aryribeiro/quadro-branco.git](https://github.com/aryribeiro/quadro-branco.git)
+   git clone https://github.com/aryribeiro/quadro-branco.git
    cd quadro-branco
+
+
+**Por Ary Ribeiro: https://www.linkedin.com/in/aryribeiro**
