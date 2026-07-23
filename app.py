@@ -321,7 +321,6 @@ HTML_XPI_EMULATOR = """
             redoStack = [];
         }
 
-        // Filtra objetos do laser para não poluir o histórico
         canvas.on('object:added', (e) => {
             if (e.target && e.target.isLaser) return;
             saveState();
@@ -391,8 +390,14 @@ HTML_XPI_EMULATOR = """
             currentMode = mode;
             document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
 
+            // Desativa seleção ativa existente
+            canvas.discardActiveObject();
+
             canvas.isDrawingMode = (mode === 'draw' || mode === 'highlighter' || mode === 'eraser');
             canvas.selection = (mode === 'select');
+            
+            // FIX CRÍTICO: Bloqueia a detecção de objetos/imagens quando em modo laser
+            canvas.skipTargetFind = (mode === 'pointer');
 
             if (mode === 'draw') {
                 document.getElementById('btn-draw').classList.add('active');
@@ -420,6 +425,8 @@ HTML_XPI_EMULATOR = """
                 canvas.defaultCursor = 'crosshair';
                 canvas.hoverCursor = 'crosshair';
             }
+
+            canvas.renderAll();
         }
 
         function hexToRgba(hex, alpha) {
@@ -430,7 +437,7 @@ HTML_XPI_EMULATOR = """
         }
 
         // ==========================================
-        // IMPLEMENTAÇÃO DO PONTEIRO LASER (NEON TRAIL)
+        // PONTEIRO LASER (ISOLADO DE OBJETOS)
         // ==========================================
         let isLaserMouseDown = false;
         let lastLaserPoint = null;
@@ -458,7 +465,6 @@ HTML_XPI_EMULATOR = """
         function drawLaserPoint(e) {
             const pointer = canvas.getPointer(e);
 
-            // Conecta os pontos com uma linha brilhante se houver ponto anterior
             if (lastLaserPoint) {
                 const laserLine = new fabric.Line(
                     [lastLaserPoint.x, lastLaserPoint.y, pointer.x, pointer.y], 
@@ -480,7 +486,6 @@ HTML_XPI_EMULATOR = """
                 canvas.add(laserLine);
                 isStateLocked = false;
 
-                // Animação de dissolução do rastro
                 let op = 1;
                 const fadeLine = setInterval(() => {
                     op -= 0.08;
@@ -497,7 +502,6 @@ HTML_XPI_EMULATOR = """
                 }, 20);
             }
 
-            // Desenha ponto central com brilho intenso
             const laserDot = new fabric.Circle({
                 left: pointer.x,
                 top: pointer.y,
