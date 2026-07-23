@@ -44,6 +44,12 @@ HTML_XPI_EMULATOR = """
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Cor da Barra de Status nos Dispositivos Móveis (Android/Safari) -->
+    <meta name="theme-color" content="#f97316">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#f97316">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -52,7 +58,27 @@ HTML_XPI_EMULATOR = """
             margin: 0;
             padding: 0;
             user-select: none;
+            /* Scrollbar para Firefox */
+            scrollbar-width: thin;
+            scrollbar-color: #f97316 #ffffff;
         }
+
+        /* Estilização da Barra de Rolagem (Chrome, Safari, Edge, Opera) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f97316;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ea580c;
+        }
+
         html, body {
             width: 100%;
             height: 100vh;
