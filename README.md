@@ -1,12 +1,13 @@
 Obs.: caso o app esteja no modo "sleeping" (dormindo) ao entrar, basta clicar no botão que estará disponível e aguardar, para ativar o mesmo.
 
-<img width="537" height="604" alt="print" src="https://github.com/user-attachments/assets/ef2f9296-9774-486b-8735-7fcbb8f68b99" />
+<p align="center"><img width="337" height="404" alt="print" src="https://github.com/user-attachments/assets/ef2f9296-9774-486b-8735-7fcbb8f68b99" /></p>
 
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://quadro.streamlit.app)
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)
 ![Fabric.js](https://img.shields.io/badge/Fabric.js-5.3.1-blue?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
+
 ![Por Ary Ribeiro:](https://www.linkedin.com/in/aryribeiro)
 
 O 🎨 **Quadro Branco** (Web App & Canvas Editor) é uma aplicação de alta fidelidade, desenvolvida em **Streamlit** com arquitetura **Fullstack (HTML5 / Fabric.js / CSS3 / JavaScript)**.
